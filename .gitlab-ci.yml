@@ -1,0 +1,24 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - echo "Krok 1: Budowanie projektu..."
+    - mvn clean compile
+
+test_job:
+  stage: test
+  script:
+    - echo "Krok 2: Uruchamianie testów..."
+    - mvn test
+
+deploy_test_job:
+  stage: deploy
+  script:
+    - echo "Krok 3: Wdrażanie na środowisko testowe..."
+    - ./deploy-test.sh
+  environment:
+    name: test
