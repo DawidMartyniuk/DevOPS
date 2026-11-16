@@ -3,21 +3,31 @@ stages:
   - test
   - deploy
 
+image: python:3.11-slim
+
 build_job:
   stage: build
   script:
-    - 'echo "Krok 1 - Symulacja budowania projektu..."'
-    - 'sleep 2'
+    - echo "Budowanie aplikacji i instalacja zależności..."
+    - pip install pytest flake8
+    - mkdir -p dist
+    - cp *.py dist/
+  artifacts:
+    paths:
+      - dist/
 
 test_job:
   stage: test
   script:
-    - 'echo "Krok 2 - Uruchamianie testow..."'
-    - 'echo "Wszystkie testy zaliczone pomyslnie."'
+    - echo "Uruchamianie testów jednostkowych..."
+    - pytest
+  dependencies:
+    - build_job
 
 deploy_test_job:
   stage: deploy
   script:
-    - 'echo "Krok 3 - Wdrazanie na srodowisko testowe..."'
+    - echo "Wdrażanie wersji $CI_COMMIT_SHORT_SHA na środowisko testowe..."
   environment:
     name: test
+    url: https://test.twoja-aplikacja.example.com
